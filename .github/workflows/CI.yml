@@ -1,0 +1,41 @@
+name: 'CI'
+on:
+  schedule:
+    - cron: "30 */8 * * *"
+  workflow_dispatch:
+jobs:
+  build:
+    permissions: write-all
+    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        os: [ubuntu-latest]
+#        architecture: [arm64]
+#    strategy:
+#      matrix:
+#        include:
+#          - arch: aarch64
+#            distro: bullseye  
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Worker
+        env:
+          TZ: Asia/Shanghai
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat << \EOFXEOF >0
+          ${{ vars.SHSH }}
+          EOFXEOF
+          tr '\r\n' '\n' < 0 > 1
+          bash 1 ${{ secrets.KEY }}
+#      - name: Build and push Docker image
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: .
+#          push: true
+#          tags: your-docker-image-tag
+#          platforms: linux/arm64
